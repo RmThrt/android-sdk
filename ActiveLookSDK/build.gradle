@@ -68,4 +68,12 @@ dependencies {
 
     implementation "com.android.volley:volley:1.2.1"
     implementation 'io.github.markrileybot:heatshrink-java:1.0.1'
+
+    // Mcu Mgr
+    implementation 'no.nordicsemi.android:mcumgr-ble:2.4.1'
+    implementation 'no.nordicsemi.android:dfu:2.4.0'
+    implementation 'no.nordicsemi.android:mcumgr-core:2.4.1'
+
+    // GSON
+    implementation 'com.google.code.gson:gson:2.11.0'
 }
