@@ -189,4 +189,7 @@ class GlassesImpl extends AbstractGlasses implements Glasses {
         this.device = source.readParcelable(BluetoothDevice.class.getClassLoader());
     }
 
+    public BluetoothDevice getDevice(){
+        return this.device;
+    }
 }

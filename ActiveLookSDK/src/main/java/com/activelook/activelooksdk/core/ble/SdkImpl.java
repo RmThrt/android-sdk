@@ -188,7 +188,7 @@ class SdkImpl implements Sdk {
     }
 
     void update(final DiscoveredGlasses discoveredGlasses, final GlassesImpl glasses, final Consumer<Glasses> onConnected, Consumer<DiscoveredGlasses> onConnectionFail) {
-        this.updater.update(discoveredGlasses, glasses, onConnected, onConnectionFail);
+        this.updater.update(this.context, discoveredGlasses, glasses, onConnected, onConnectionFail);
     }
 
     @Override

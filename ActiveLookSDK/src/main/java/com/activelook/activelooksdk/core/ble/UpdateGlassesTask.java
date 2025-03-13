@@ -1,8 +1,13 @@
 package com.activelook.activelooksdk.core.ble;
 
+import static io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.State.RESET;
+import static io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.State.CONFIRM;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.core.util.Consumer;
@@ -18,6 +23,7 @@ import com.activelook.activelooksdk.types.DeviceInformation;
 import com.activelook.activelooksdk.types.GlassesUpdate;
 import com.activelook.activelooksdk.types.GlassesVersion;
 import com.activelook.activelooksdk.types.Utils;
+import com.activelook.activelooksdk.types.ZipPackage;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -38,6 +44,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.runtime.mcumgr.McuMgrTransport;
+import io.runtime.mcumgr.ble.McuMgrBleTransport;
+import io.runtime.mcumgr.dfu.FirmwareUpgradeCallback;
+import io.runtime.mcumgr.dfu.FirmwareUpgradeController;
+import io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager;
+import io.runtime.mcumgr.dfu.mcuboot.model.ImageSet;
+import io.runtime.mcumgr.dfu.suit.model.CacheImageSet;
+import io.runtime.mcumgr.exception.McuMgrException;
 
 @SuppressLint("DefaultLocale")
 class UpdateGlassesTask {
@@ -90,6 +105,9 @@ class UpdateGlassesTask {
     private ArrayList<String> cfgLines = new ArrayList<>();
     private int indexLine = -1;
 
+    private Context context;
+    private int mcuMgrUpgradeImgSize = 0;
+
     private void onUpdateStart(final UpdateProgress progress) {
         this.progress = progress.withProgress(0);
         this.onUpdateStartCallback.accept(this.progress);
@@ -108,6 +126,7 @@ class UpdateGlassesTask {
     }
 
     UpdateGlassesTask(
+            final Context context,
             final RequestQueue requestQueue,
             final String token,
             final DiscoveredGlasses discoveredGlasses,
@@ -119,6 +138,7 @@ class UpdateGlassesTask {
             final Consumer<GlassesUpdate> onUpdateProgress,
             final Consumer<GlassesUpdate> onUpdateSuccess,
             final Consumer<GlassesUpdate> onUpdateError) {
+        this.context = context;
         this.requestQueue = requestQueue;
         this.token = token;
         this.discoveredGlasses = discoveredGlasses;
@@ -369,7 +389,13 @@ class UpdateGlassesTask {
         this.onUpdateAvailableCallback.accept(new android.util.Pair<>(this.progress, ()->{
             Log.d("FIRMWARE DOWNLOADER", String.format("bytes: [%d] %s", response.length, Arrays.toString(response)));
             this.firmware = new Firmware(response);
-            if (this.progress.getSourceFirmwareVersion().equals("4.12.0")) {
+
+            if(this.glasses.getDeviceInformation().getHardwareVersion().startsWith("ALK03")){
+                this.glasses.clear();
+                this.glasses.layoutDisplay((byte) 0x09, "");
+                this.mcuMgrUpgradeImgSize = 0;
+                this.McuMgrUpgrade();
+            }else if (this.progress.getSourceFirmwareVersion().equals("4.12.0")) {
                 this.glasses.clear();
                 this.glasses.layoutDisplay((byte) 0x09, "");
 
@@ -391,6 +417,96 @@ class UpdateGlassesTask {
         }*/
     }
 
+    private void McuMgrUpgrade(){
+        try{
+            // Initialize the BLE transporter with context and a BluetoothDevice
+            McuMgrTransport transport = new McuMgrBleTransport(this.context, this.glasses.getDevice());
+
+            // Initialize the Firmware Upgrade Manager.
+            FirmwareUpgradeManager dfuManager = new FirmwareUpgradeManager(transport, new FirmwareUpgradeCallback() {
+
+                @Override
+                public void onUpgradeStarted(FirmwareUpgradeController firmwareUpgradeController) {
+                    Log.i("McuMgrUpgrade", String.format("Upgrade started"));
+                    onUpdateProgress(progress.withProgress(0));
+                }
+
+                @Override
+                public void onStateChanged(Object prevState, Object newState) {
+                    Log.i("McuMgrUpgrade", String.format("State changed :[%s] -> [%s]", prevState, newState));
+                    if(prevState == RESET && newState == CONFIRM){
+                        onUpdateProgress(progress.withProgress(100));
+                        onUpdateSuccess(progress);
+                    }
+
+                }
+
+                @Override
+                public void onUpgradeCompleted() {
+                    Log.i("McuMgrUpgrade", String.format("Jobs done !"));
+                }
+
+                @Override
+                public void onUpgradeFailed(Object state, McuMgrException e) {
+                    Log.e("McuMgrUpgrade", String.format("Fail [%s -> %s] !", state, e));
+                }
+
+                @Override
+                public void onUpgradeCanceled(Object state) {
+                    Log.i("McuMgrUpgrade", String.format("Cancel !"));
+                }
+
+                @Override
+                public void onUploadProgressChanged(int bytesSent, int imageSize, long timestamp) {
+                    int imgNb = 0;
+                    if(mcuMgrUpgradeImgSize == 0){
+                        mcuMgrUpgradeImgSize = imageSize;
+                    }else if(mcuMgrUpgradeImgSize != imageSize){
+                        imgNb = 50;
+                    }
+                    onUpdateProgress(progress.withProgress(((double) bytesSent / imageSize) * 50 + imgNb));
+
+                    Log.i("McuMgrUpgrade", String.format("onUploadProgressChanged : [%d] [%d] [%d] ",
+                                bytesSent,
+                                imageSize,
+                                timestamp
+                        ));
+                }
+            });
+
+            final ZipPackage zip = new ZipPackage(firmware.getBytes());
+            final byte[] envelope = zip.getSuitEnvelope();
+            ImageSet images;
+            if (envelope != null) {
+                images = new ImageSet().add(envelope);
+
+                final CacheImageSet cacheImages = zip.getCacheBinaries();
+                if (cacheImages != null) {
+                    images.set(cacheImages.getImages());
+                }
+            } else {
+                images = zip.getBinaries();
+            }
+
+            final FirmwareUpgradeManager.Settings settings = new FirmwareUpgradeManager.Settings.Builder()
+                    .setEraseAppSettings(false)
+                    .setEstimatedSwapTime(10000)
+                    .setWindowCapacity(3)
+                    .setMemoryAlignment(4)
+                    .build();
+
+            dfuManager.setMode(FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM);
+
+            dfuManager.start(images, settings);
+
+        } catch (IOException e) {
+            this.onUpdateError(this.progress.withStatus(GlassesUpdate.State.ERROR_UPDATE_FAIL));
+            this.onConnectionFail.accept(this.discoveredGlasses);
+        } catch (McuMgrException e) {
+            this.onUpdateError(this.progress.withStatus(GlassesUpdate.State.ERROR_UPDATE_FAIL));
+            this.onConnectionFail.accept(this.discoveredGlasses);
+        }
+    }
 
     private void eraseFWRecursive(){
         if (eraseSize > 0) {
