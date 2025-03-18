@@ -1,7 +1,7 @@
 package com.activelook.activelooksdk.core.ble;
 
 import static io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.State.RESET;
-import static io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.State.CONFIRM;
+import static io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.State.TEST;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -434,7 +434,7 @@ class UpdateGlassesTask {
                 @Override
                 public void onStateChanged(Object prevState, Object newState) {
                     Log.i("McuMgrUpgrade", String.format("State changed :[%s] -> [%s]", prevState, newState));
-                    if(prevState == RESET && newState == CONFIRM){
+                    if(prevState == TEST && newState == RESET){
                         onUpdateProgress(progress.withProgress(100));
                         onUpdateSuccess(progress);
                     }
