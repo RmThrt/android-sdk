@@ -19,11 +19,11 @@ plugins {
 
 android {
     namespace 'com.activelook.internal'
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     defaultConfig {
         minSdk 16
-        targetSdk 34
+        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

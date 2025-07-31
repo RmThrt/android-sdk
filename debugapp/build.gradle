@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.activelook.debugapp'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.activelook.debugapp"
         minSdk 21
-        targetSdk 34
+        targetSdk 35
         versionCode 422
         versionName "4.2.2"
 
