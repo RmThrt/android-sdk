@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Version 4.5.6
+
+### New
+
+- Added new firmware support for future devices
+- Updated Android SDK to version 35 to comply with Play Store requirements
+
 ## Version 4.5.5
 
 ### Fixes
