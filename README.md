@@ -390,6 +390,28 @@ public class ScanningActivity extends AppCompatActivity {
 }
 ```
 
+### Last connected device
+
+You can persist a [SerializedGlasses](https://github.com/ActiveLook/android-sdk/blob/main/ActiveLookSDK/src/main/java/com/activelook/activelooksdk/SerializedGlasses.java) after Glasses connection.
+
+```java
+private SerializedGlasses storedGlasses = null;
+ 
+private void onGlassesConnected(final Glasses g) {
+        this.storedGlasses = g.getSerializedGlasses();
+}
+```
+
+And try to [reconnect](https://github.com/ActiveLook/android-sdk/blob/main/ActiveLookSDK/src/main/java/com/activelook/activelooksdk/core/ble/SdkImpl.java#L147) on SerializedGlasses.
+
+```java
+private void reconnect(SerializedGlasses serializedGlasses, Consumer<Glasses> onConnected, Consumer<DiscoveredGlasses> onConnectionFail, Consumer<Glasses> onDisconnected){
+        Sdk.getInstance().connect(serializedGlasses, onConnected, onConnectionFail, onDisconnected);
+}
+``
+
+An auto reconnection is implemented in SDK  on unwanted disconnection after first connection.
+
 ### About Android Wear
 
 For now, it is unclear if Android Wear can be supported.
@@ -399,10 +421,10 @@ this sample code will be updated accordingly.
 
 # About the project
 
-Compiled and validated with Android studio 3.1.3 for Windows 64-bit
+Compiled and validated with Android studio 2024.3.1 for Mac
 Using (automatically installed):
-- Gradle 4.4
-- Android SDK Platform 21
+- Gradle 8.6
+- Android SDK Platform 34
 - Build Tools revision 27.0.3
 
 

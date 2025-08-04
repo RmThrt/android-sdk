@@ -38,8 +38,9 @@ class GlassesUpdater {
         this.requestQueue = Volley.newRequestQueue(context);
     }
 
-    public void update(final DiscoveredGlasses discoveredGlasses, final GlassesImpl glasses, final Consumer<Glasses> onConnected, Consumer<DiscoveredGlasses> onConnectionFail) {
+    public void update(final Context context, final DiscoveredGlasses discoveredGlasses, final GlassesImpl glasses, final Consumer<Glasses> onConnected, Consumer<DiscoveredGlasses> onConnectionFail) {
         new UpdateGlassesTask(
+                context,
                 this.requestQueue,
                 this.token,
                 discoveredGlasses,

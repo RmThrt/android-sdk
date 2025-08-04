@@ -7,13 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    namespace 'com.activelook.activelooksdk'
+    compileSdk 35
 
     defaultConfig {
         minSdk 21
-        targetSdk 31
-        versionCode sdkVersionCode
-        versionName "$sdkVersionName"
+        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -69,4 +68,10 @@ dependencies {
 
     implementation "com.android.volley:volley:1.2.1"
     implementation 'io.github.markrileybot:heatshrink-java:1.0.1'
+
+    // Mcu Mgr
+    implementation 'no.nordicsemi.android:mcumgr-ble:2.4.1'
+
+    // GSON
+    implementation 'com.google.code.gson:gson:2.11.0'
 }

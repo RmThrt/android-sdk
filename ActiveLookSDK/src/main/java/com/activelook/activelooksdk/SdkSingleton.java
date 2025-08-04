@@ -23,6 +23,7 @@ import androidx.core.util.Predicate;
 import com.activelook.activelooksdk.core.ble.BleSdkSingleton;
 import com.activelook.activelooksdk.core.debug.DebugSdkSingleton;
 import com.activelook.activelooksdk.types.GlassesUpdate;
+import com.android.volley.BuildConfig;
 
 final class SdkSingleton {
 
