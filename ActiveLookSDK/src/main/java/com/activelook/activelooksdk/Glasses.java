@@ -335,6 +335,22 @@ public interface Glasses extends Parcelable {
      *
      * @param action hold or flush display
      */
+    void polylines(short[][] xys);
+    /**
+     * Draw multiple connected lines at the corresponding coordinates. Thickness is set for all lines.
+     *
+     * @param thickness Polyline thickness
+     * @param xys Array of [x0, y1, x1, y1, ..., xn, yn]
+     */
+    void polylines(byte thickness, short[][] xys);
+    /**
+     * Hold or flush the graphic engine.
+     * When held, new display commands are stored in memory and are displayed when the graphic engine is flushed.
+     * This allows stacking multiple graphic operations and displaying them simultaneously without screen flickering.
+     * Warning: Clear is not held by the graphic engine, a white rectangle can be used instead.
+     *
+     * @param action hold or flush display
+     */
     void holdFlush(holdFlushAction action);
     /**
      * Give the list of bitmap saved into the device.
@@ -810,6 +826,39 @@ public interface Glasses extends Parcelable {
         for (Point p : points) {
             xys[i++] = (short) p.x;
             xys[i++] = (short) p.y;
+        }
+        this.polyline(thickness, xys);
+    }
+    /**
+     * Draw multiple polylines at the corresponding coordinates.
+     *
+     * @param points List of list of points.
+     */
+    default void polylines(List<List<Point>> points) {
+        short[] xys = new short[points.size() * 2];
+        int i = 0;
+        for(List<Point> pl: points) {
+            for (Point p : pl) {
+                xys[i++] = (short) p.x;
+                xys[i++] = (short) p.y;
+            }
+        }
+        this.polyline(xys);
+    }
+    /**
+     * Draw multiple polylines at the corresponding coordinates. Thickness is set for all lines.
+     *
+     * @param thickness Polyline thickness
+     * @param points List of list of points.
+     */
+    default void polylines(byte thickness, List<List<Point>> points) {
+        short[] xys = new short[points.size() * 2];
+        int i = 0;
+        for(List<Point> pl: points) {
+            for (Point p : pl) {
+                xys[i++] = (short) p.x;
+                xys[i++] = (short) p.y;
+            }
         }
         this.polyline(thickness, xys);
     }
