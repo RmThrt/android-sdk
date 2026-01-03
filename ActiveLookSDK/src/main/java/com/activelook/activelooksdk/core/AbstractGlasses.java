@@ -104,6 +104,7 @@ public abstract class AbstractGlasses implements Glasses {
     static final byte ID_fontSave = (byte) 0x51;
     static final byte ID_fontSelect = (byte) 0x52;
     static final byte ID_fontDelete = (byte) 0x53;
+    static final byte ID_polylines = (byte) 0x54;
     /*
      * Layout commands ids
      */
@@ -391,6 +392,27 @@ public abstract class AbstractGlasses implements Glasses {
         final byte reserved = 0;
         final CommandData data = new CommandData().addUInt8(thickness).addUInt8(reserved).addUInt8(reserved).addInt16(points);
         this.writeCommand(new Command(ID_polyline, data));
+    }
+
+    @Override
+    public void polylines(final short[][] points) {
+        final CommandData data = new CommandData();
+        for (short[] polyline : points) {
+            data.addInt16(polyline);
+        }
+
+        this.writeCommand(new Command(ID_polylines, data));
+    }
+
+    @Override
+    public void polylines(final byte thickness, final short[][] points) {
+        final byte reserved = 0;
+        final CommandData data = new CommandData().addUInt8(thickness).addUInt8(reserved).addUInt8(reserved);
+
+        for (short[] polyline : points) {
+            data.addInt16(polyline);
+        }
+        this.writeCommand(new Command(ID_polylines, data));
     }
 
     @Override
