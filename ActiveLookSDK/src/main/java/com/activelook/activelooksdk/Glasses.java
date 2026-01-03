@@ -17,6 +17,7 @@ package com.activelook.activelooksdk;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.core.util.Consumer;
 
@@ -319,14 +320,16 @@ public interface Glasses extends Parcelable {
      *
      * @param xys Array of [x0, y1, x1, y1, ..., xn, yn]
      */
-    void polyline(short[] xys);
+    // void polyline(short[] xys);
+    void polyline2(short[] xys);
     /**
      * Draw multiple connected lines at the corresponding coordinates. Thickness is set for all lines.
      *
      * @param thickness Polyline thickness
      * @param xys Array of [x0, y1, x1, y1, ..., xn, yn]
      */
-    void polyline(byte thickness, short[] xys);
+    // void polyline(byte thickness, short[] xys);
+    void polyline2(byte thickness, short[] xys);
     /**
      * Hold or flush the graphic engine.
      * When held, new display commands are stored in memory and are displayed when the graphic engine is flushed.
@@ -814,6 +817,16 @@ public interface Glasses extends Parcelable {
         }
         this.polyline(xys);
     }
+     
+    default void polyline2(List<Point> points) {
+        short[] xys = new short[points.size() * 2];
+        int i = 0;
+        for (Point p : points) {
+            xys[i++] = (short) p.x;
+            xys[i++] = (short) p.y;
+        }
+        this.polyline2(xys);
+    }
     /**
      * Draw multiple connected lines at the corresponding coordinates. Thickness is set for all lines.
      *
@@ -822,6 +835,17 @@ public interface Glasses extends Parcelable {
      */
     default void polyline(byte thickness, List<Point> points) {
         short[] xys = new short[points.size() * 2];
+        Log.d("MyPlugin", "Hello from Java");
+        int i = 0;
+        for (Point p : points) {
+            xys[i++] = (short) p.x;
+            xys[i++] = (short) p.y;
+        }
+        this.polyline(thickness, xys);
+    }
+    default void polyline2(byte thickness, List<Point> points) {
+        short[] xys = new short[points.size() * 2];
+        Log.d("MyPlugin", "Hello from Java");
         int i = 0;
         for (Point p : points) {
             xys[i++] = (short) p.x;

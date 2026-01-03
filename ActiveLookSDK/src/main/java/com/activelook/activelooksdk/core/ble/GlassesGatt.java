@@ -200,7 +200,7 @@ public class ActivelookSdkPlugin implements FlutterPlugin, MethodCallHandler {
             }
             this.polyline(thickness, coordinates);
             result.success("Polyline !");
-        }  } else if (call.method.equals("ActiveLookSDK#polylines")) {
+        } else if (call.method.equals("ActiveLookSDK#polylines")) {
           byte thickness = Byte.valueOf(call.argument("thickness").toString());
             ArrayList<ArrayList<Integer>> coordinatesList = (ArrayList<ArrayList<Integer>>) call.argument("points");
             short[][] coordinates = new short[coordinatesList.size()][];
@@ -407,6 +407,10 @@ public class ActivelookSdkPlugin implements FlutterPlugin, MethodCallHandler {
 
     private void polyline(byte thickness, short[] coordinates) {
         glasses.polyline(thickness, coordinates);
+        invokeMethodOnUiThread("handlePolyline", new HashMap(), this.channel);
+    }
+    private void polyline2(byte thickness, short[] coordinates) {
+        glasses.polyline2(thickness, coordinates);
         invokeMethodOnUiThread("handlePolyline", new HashMap(), this.channel);
     }
 
