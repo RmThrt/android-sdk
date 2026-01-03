@@ -836,14 +836,15 @@ public interface Glasses extends Parcelable {
      */
     default void polylines(List<List<Point>> points) {
         short[] xys = new short[points.size() * 2];
+        Log.d("MyPlugin", "Hello from Java");
         int i = 0;
         for(List<Point> pl: points) {
             for (Point p : pl) {
                 xys[i++] = (short) p.x;
                 xys[i++] = (short) p.y;
             }
+            this.polyline(xys);
         }
-        this.polyline(xys);
     }
     /**
      * Draw multiple polylines at the corresponding coordinates. Thickness is set for all lines.
@@ -859,8 +860,8 @@ public interface Glasses extends Parcelable {
                 xys[i++] = (short) p.x;
                 xys[i++] = (short) p.y;
             }
+            this.polyline(thickness, xys);
         }
-        this.polyline(thickness, xys);
     }
 
 }

@@ -98,6 +98,22 @@ public class LayoutExtraCmd {
         return this;
     }
 
+    public LayoutExtraCmd addSubCommandPolylines(byte thickness, List<List<Point>> points) {
+        final byte reserved = 0;
+
+        this.subCommands.add((byte) 0x0C).addUInt8((short) points.size()).addUInt8(thickness).addUInt8(reserved).addUInt8(reserved);
+
+        for (Point line : points){
+            this.subCommands.addInt16((short)4000);
+            for (Point p : line) {
+                this.subCommands.addInt16((short) p.x).addInt16((short) p.y);
+            }
+            this.subCommands.addInt16((short)5000);
+
+        }
+        return this;
+    }
+
     public byte[] toBytes() {
         final byte[] subBytes = this.subCommands.getBytes();
         return new CommandData()

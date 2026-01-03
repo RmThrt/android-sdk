@@ -377,6 +377,9 @@ public class DebugActivity extends AppCompatActivity {
         g.polyline(new short [] {
                 150, 200, 200, 250, 200, 200, 250, 250, 150, 200
         });
+        g.polylines(new short [] {
+                150, 200, 200, 250, 200, 200, 250, 250, 150, 200
+        });
         g.holdFlush(holdFlushAction.FLUSH);
 
         g.imgList(l -> {
