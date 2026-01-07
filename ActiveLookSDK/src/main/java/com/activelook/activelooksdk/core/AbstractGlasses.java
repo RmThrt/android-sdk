@@ -406,15 +406,17 @@ public abstract class AbstractGlasses implements Glasses {
 
     @Override
     public void polylines(final byte thickness, final short[][] points) {
+        Log.d("MyPlugin", "Hello from Java");
         final byte reserved = 0;
         final CommandData data = new CommandData().addUInt8(thickness).addUInt8(reserved).addUInt8(reserved);
 
         for (short[] polyline : points) {
+            data.addInt16((short)4000);
             data.addInt16(polyline);
+            data.addInt16((short)5000);
         }
         this.writeCommand(new Command(ID_polylines, data));
     }
-
     @Override
     public void holdFlush(final holdFlushAction action) {
         final CommandData data = CommandData.fromHoldFLushAction(action);
