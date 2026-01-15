@@ -47,6 +47,11 @@ public class LayoutExtraCmd {
         return this;
     }
 
+    public LayoutExtraCmd addSubCommandColor2(byte c) {
+        this.subCommands.add((byte) 0x03).addUInt8(c);
+        return this;
+    }
+
     public LayoutExtraCmd addSubCommandFont(byte f) {
         this.subCommands.add((byte) 0x04).addUInt8(f);
         return this;

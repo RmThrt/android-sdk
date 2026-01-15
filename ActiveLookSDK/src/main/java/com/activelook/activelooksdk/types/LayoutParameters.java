@@ -102,6 +102,11 @@ public class LayoutParameters {
         this.subCommands.add((byte) 0x03).addUInt8(c);
         return this;
     }
+    
+    public LayoutParameters addSubCommandColor2(byte c) {
+        this.subCommands.add((byte) 0x03).addUInt8(c);
+        return this;
+    }
 
     public LayoutParameters addSubCommandFont(byte f) {
         this.subCommands.add((byte) 0x04).addUInt8(f);

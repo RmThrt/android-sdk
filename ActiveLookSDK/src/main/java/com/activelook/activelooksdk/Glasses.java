@@ -248,6 +248,12 @@ public interface Glasses extends Parcelable {
      */
     void color(byte value);
     /**
+     * Sets the color level (0 to 15) used to draw the next graphical element.
+     *
+     * @param value The selected color.
+     */
+    void color2(byte value);
+    /**
      * Set a pixel on at the corresponding coordinates.
      *
      * @param x The x coordinate of the point.
