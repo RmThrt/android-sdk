@@ -78,8 +78,8 @@ public abstract class AbstractGlasses implements Glasses {
     /*
      * Graphics commands ids
      */
-    static final byte ID_color = (byte) 0x30;
-    static final byte ID_color2 = (byte) 0x3D;
+    static final byte ID_grayscale = (byte) 0x30;
+    static final byte ID_color = (byte) 0x3D;
     static final byte ID_point = (byte) 0x31;
     static final byte ID_line = (byte) 0x32;
     static final byte ID_rect = (byte) 0x33;
@@ -331,15 +331,15 @@ public abstract class AbstractGlasses implements Glasses {
     }
 
     @Override
-    public void color(final byte value) {
+    public void grayscale(final byte value) {
         final CommandData data = CommandData.fromGreyLevel(value);
-        this.writeCommand(new Command(ID_color, data));
+        this.writeCommand(new Command(ID_grayscale, data));
     }
 
     @Override
-    public void color2(final byte value) {
-        final CommandData data = CommandData.fromGreyLevel(value);
-        this.writeCommand(new Command(ID_color2, data));
+    public void color(final byte value) {
+        final CommandData data = CommandData.fromColorLevel(value);
+        this.writeCommand(new Command(ID_color, data));
     }
 
     @Override

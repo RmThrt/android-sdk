@@ -257,6 +257,12 @@ public final class CommandData {
         return new CommandData(level);
     }
 
+    public static CommandData fromColorLevel(final byte level) {
+        assert 0 <= level  : String.format(Locale.US, "Grey level out of bounds: %d <  0", level);
+        assert level <= 255 : String.format(Locale.US, "Grey level out of bounds: %d > 255", level);
+        return new CommandData(level);
+    }
+
     public static CommandData fromDemoPattern(final DemoPattern pattern) {
         assert pattern != null : String.format(Locale.US, "Pattern cannot be null");
         switch (pattern) {

@@ -42,12 +42,12 @@ public class LayoutExtraCmd {
         return this;
     }
 
-    public LayoutExtraCmd addSubCommandColor(byte c) {
+    public LayoutExtraCmd addSubCommandgrayscale(byte c) {
         this.subCommands.add((byte) 0x03).addUInt8(c);
         return this;
     }
 
-    public LayoutExtraCmd addSubCommandColor2(byte c) {
+    public LayoutExtraCmd addSubCommandcolor(byte c) {
         this.subCommands.add((byte) 0x03).addUInt8(c);
         return this;
     }

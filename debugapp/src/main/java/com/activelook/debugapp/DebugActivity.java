@@ -267,7 +267,7 @@ public class DebugActivity extends AppCompatActivity {
         g.cfgSet("ALooK");
         LayoutExtraCmd layoutExtraCmd = new LayoutExtraCmd();
         layoutExtraCmd.addSubCommandBitmap((byte) 8, (short) 216, (short) 8);
-        layoutExtraCmd.addSubCommandColor((byte) 6);
+        layoutExtraCmd.addSubCommandgrayscale((byte) 6);
         layoutExtraCmd.addSubCommandText((short) 65, (short) 24, "meter");
         g.layoutDisplayExtended((byte) 12, (short) 30, (byte) 153,"200", layoutExtraCmd);
 
@@ -341,7 +341,7 @@ public class DebugActivity extends AppCompatActivity {
             Log.i("SETTINGS", String.format("Cmd settings isAlsEnable     %s", s.isAlsEnable() ? "yes" : "no"));
             Log.i("SETTINGS", String.format("Cmd settings isGestureEnable %s", s.isGestureEnable() ? "yes" : "no"));
         });
-        g.color((byte) 10);
+        g.grayscale((byte) 10);
         g.line(new Point(0, 0), new Point(100, 100));
         g.line(new Point(0, 100), new Point(100, 0));
 
@@ -358,17 +358,17 @@ public class DebugActivity extends AppCompatActivity {
             Log.i("SETTINGS", String.format("Cmd settings isAlsEnable     %s", s.isAlsEnable() ? "yes" : "no"));
             Log.i("SETTINGS", String.format("Cmd settings isGestureEnable %s", s.isGestureEnable() ? "yes" : "no"));
         });
-        g.color((byte) 15);
+        g.grayscale((byte) 15);
         g.line(new Point(0, 0), new Point(100, 100));
         g.line(new Point(0, 100), new Point(100, 0));
 
         g.clear();
 
         g.holdFlush(holdFlushAction.HOLD);
-        g.color((byte) 8);
+        g.grayscale((byte) 8);
         g.rect(new Point(0, 0), new Point(100, 100));
         g.rectf(new Point(10, 10), new Point(90, 90));
-        g.color((byte) 15);
+        g.grayscale((byte) 15);
         g.circ(new Point(150, 50), (byte) 50);
         g.circf(new Point(150, 50), (byte) 30);
 

@@ -98,12 +98,12 @@ public class LayoutParameters {
         return this;
     }
 
-    public LayoutParameters addSubCommandColor(byte c) {
+    public LayoutParameters addSubCommandgrayscale(byte c) {
         this.subCommands.add((byte) 0x03).addUInt8(c);
         return this;
     }
-    
-    public LayoutParameters addSubCommandColor2(byte c) {
+
+    public LayoutParameters addSubCommandcolor(byte c) {
         this.subCommands.add((byte) 0x03).addUInt8(c);
         return this;
     }
